@@ -23,6 +23,7 @@ const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
   uri: 'https://swapi-graphql.netlify.app/.netlify/functions/index'
 });
 
+// Explorer: https://studio.apollographql.com/sandbox/explorer
 
 const ALL_FILMS = gql`
 query Query {
@@ -30,7 +31,8 @@ query Query {
     films {
       title
       director
-      releaseDate      
+      releaseDate  
+      id    
     }
   }
 }
