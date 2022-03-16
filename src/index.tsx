@@ -3,11 +3,49 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+// import { cache } from './cache';
+
+import {
+  ApolloClient,
+  NormalizedCacheObject,
+  ApolloProvider,
+  gql,
+  InMemoryCache
+} from '@apollo/client';
+
+
+const cache = new InMemoryCache();
+
+// ApolloClient nutzt den SWAPI GraphQL Wrapper von https://swapi.dev/ 
+const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
+  cache,
+  uri: 'https://swapi-graphql.netlify.app/.netlify/functions/index'
+});
+
+
+const ALL_FILMS = gql`
+query Query {
+  allFilms {
+    films {
+      title
+      director
+      releaseDate      
+    }
+  }
+}
+`;
+
+client.query({
+  query: ALL_FILMS
+}).then(response => {
+  console.log(response);
+})
+
 
 ReactDOM.render(
-  <React.StrictMode>
+  <ApolloProvider client={client}>
     <App />
-  </React.StrictMode>,
+  </ApolloProvider>,
   document.getElementById('root')
 );
 
