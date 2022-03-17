@@ -3,7 +3,7 @@ import { gql, useQuery } from '@apollo/client';
 
 //import { LaunchTile, Header, Button, Loading } from '../components';
 import { RouteComponentProps } from '@reach/router';
-import { Card } from 'react-bootstrap';
+import { Badge, Card, Nav } from 'react-bootstrap';
 
 
 const GET_FILM = gql`
@@ -31,25 +31,44 @@ interface MovieProps extends RouteComponentProps {
 }
 
 const Movie: React.FC<MovieProps> = (props) => {
-  console.log(props);
-  const {id} = props;
+  console.log('props', props);
+  const { id } = props;
   const {
     data,
     loading,
     error
-  } = useQuery(GET_FILM, {variables:{id: id}});
+  } = useQuery(GET_FILM, { variables: { id: id } });
 
   if (loading) return <p>Loading...</p>;
   if (error || !data) return <p>ERROR</p>;
-  const {title, director, openingCrawl} = data.film;
+  console.log(data);
+  const { title, director, openingCrawl, characterConnection } = data.film;
+  const { edges } = characterConnection;
+  const characters: [any] = edges.map((x: any, index: number) => {
+    const { node } = x;
+    return node;
+  }
+  );
+  const sorted = characters.sort((a,b) =>  {return a.name.localeCompare(b.name)});
+  console.log('name', sorted);
+
   return (
     <>
-        <Card style={{ width: '80vw' }}>
+      <Card style={{ width: '80vw' }}>
         <Card.Body>
           <Card.Title>{title}</Card.Title>
-          <Card.Subtitle className="mb-2 text-muted">{director} </Card.Subtitle>
-          <Card.Text>
+          <Card.Subtitle className="mb-2 text-muted">Director: {director} </Card.Subtitle>
+          <Card.Text as='div'>
             {openingCrawl}
+            <Card.Subtitle className="mb-2 text-muted mt-3">Characters</Card.Subtitle>
+            <Nav>        
+            {
+              sorted.map(({id, name}) => (  
+                <Nav.Item key={id}>
+                <Nav.Link href={`/character/${id}`}>{name}</Nav.Link>
+              </Nav.Item>
+              ))}
+         </Nav>
           </Card.Text>
           <Card.Link href={`/`}>back</Card.Link>
         </Card.Body>
