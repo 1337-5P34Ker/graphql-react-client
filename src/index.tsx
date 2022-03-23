@@ -1,14 +1,11 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
-// import { cache } from './cache';
+import './index.css';
 
 import {
   ApolloClient,
-  NormalizedCacheObject,
   ApolloProvider,
   gql,
   InMemoryCache
@@ -18,7 +15,7 @@ import {
 const cache = new InMemoryCache();
 
 // ApolloClient nutzt den SWAPI GraphQL Wrapper von https://swapi.dev/ 
-const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
+const client = new ApolloClient({
   cache,
   uri: 'https://swapi-graphql.netlify.app/.netlify/functions/index'
 });
